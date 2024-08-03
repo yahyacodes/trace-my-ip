@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { Separator } from "./ui/separator";
 
 interface IPType {
   as: string;
@@ -26,7 +27,7 @@ interface IPType {
 const TraceIP = () => {
   const [isIP, setIsIP] = useState<IPType[]>([]);
   const [query, setQuery] = useState("");
-  const icon = L.icon({ iconUrl: "/maker-icon.png" });
+  const icon = L.icon({ iconUrl: "/marker-icon.png" });
 
   const getIP = async () => {
     try {
@@ -99,16 +100,80 @@ const TraceIP = () => {
               </Marker>
             </MapContainer>
           </div>
-          <h1>as: {ip.as}</h1>
-          <h1>city: {ip.city}</h1>
-          <h1>continent: {ip.continent}</h1>
-          <h1>country: {ip.country}</h1>
-          <h1>countryCode: {ip.countryCode}</h1>
-          <h1>currency: {ip.currency}</h1>
-          <h1>isp: {ip.isp}</h1>
-          <h1>org: {ip.org}</h1>
-          <h1>regionName: {ip.regionName}</h1>
-          <h1>timezone: {ip.timezone}</h1>
+          <div className="p-10">
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                as: <span className="font-normal text-md">{ip.as}</span>
+              </h1>
+              <Separator />
+            </div>
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                city: <span className="font-normal text-md">{ip.city}</span>
+              </h1>
+              <Separator />
+            </div>
+
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                continent:{" "}
+                <span className="font-normal text-md">{ip.continent}</span>
+              </h1>
+              <Separator />
+            </div>
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                country:{" "}
+                <span className="font-normal text-md">{ip.country}</span>
+              </h1>
+              <Separator />
+            </div>
+
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                countryCode:{" "}
+                <span className="font-normal text-md">{ip.countryCode}</span>
+              </h1>
+              <Separator />
+            </div>
+
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                currency:{" "}
+                <span className="font-normal text-md">{ip.currency}</span>
+              </h1>
+              <Separator />
+            </div>
+
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                isp: <span className="font-normal text-md">{ip.isp}</span>
+              </h1>
+              <Separator />
+            </div>
+
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                org: <span className="font-normal text-md">{ip.org}</span>
+              </h1>
+              <Separator />
+            </div>
+
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                regionName:{" "}
+                <span className="font-normal text-md">{ip.regionName}</span>
+              </h1>
+              <Separator />
+            </div>
+            <div className="p-2">
+              <h1 className="font-bold text-xl">
+                timezone:{" "}
+                <span className="font-normal text-md">{ip.timezone}</span>
+              </h1>
+              <Separator />
+            </div>
+          </div>
         </div>
       ))}
     </div>
