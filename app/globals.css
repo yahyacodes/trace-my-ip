@@ -72,7 +72,7 @@
   width: 90vw;
   margin-left: 50%;
   transform: translateX(-50%);
-  height: 70vh; /* Default height for larger screens */
+  height: 70vh;
   max-width: 100%;
 }
 
@@ -82,7 +82,6 @@
   border-radius: 1.5rem;
 }
 
-/* Media queries for responsiveness */
 @media screen and (max-width: 1024px) {
   .map-container {
     height: 50vh;
