@@ -43,10 +43,8 @@ const TraceIP = () => {
   const [isIP, setIsIP] = useState<IPType>(googleLLCIP);
   const [query, setQuery] = useState("8.8.8.8");
   const icon = L.icon({ iconUrl: "/marker-icon.png" });
-  const [error, setError] = useState<string | null>(null);
 
   const getIP = async () => {
-    setError(null);
     try {
       const res = await fetch(
         `http://ip-api.com/json/${query}?fields=status,message,continent,country,countryCode,region,regionName,city,zip,lat,lon,timezone,currency,isp,org,as,query`
@@ -76,7 +74,6 @@ const TraceIP = () => {
       console.log(data);
     } catch (error: any) {
       console.error(error);
-      setError(error.message);
     }
   };
 
