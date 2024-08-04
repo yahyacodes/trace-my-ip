@@ -25,21 +25,38 @@ interface IPType {
 }
 
 const TraceIP = () => {
-  const [isIP, setIsIP] = useState<IPType[]>([]);
-  const [query, setQuery] = useState("");
+  const googleLLCIP: IPType = {
+    as: "AS15169 Google LLC",
+    country: "United States",
+    city: "Ashburn",
+    continent: "North America",
+    currency: "USD",
+    countryCode: "US",
+    isp: "Google LLC",
+    org: "Google Public DNS",
+    regionName: "Virginia",
+    timezone: "America/New_York",
+    lat: 39.03,
+    lon: -77.5,
+  };
+
+  const [isIP, setIsIP] = useState<IPType>(googleLLCIP);
+  const [query, setQuery] = useState("8.8.8.8");
   const icon = L.icon({ iconUrl: "/marker-icon.png" });
+  const [error, setError] = useState<string | null>(null);
 
   const getIP = async () => {
+    setError(null);
     try {
       const res = await fetch(
         `http://ip-api.com/json/${query}?fields=status,message,continent,country,countryCode,region,regionName,city,zip,lat,lon,timezone,currency,isp,org,as,query`
       );
       if (!res.ok) {
-        throw new Error("could not fetch data");
+        throw new Error("Could not fetch data");
       }
       const data = await res.json();
 
-      const IPObj = {
+      const IPObj: IPType = {
         as: data.as,
         country: data.country,
         city: data.city,
@@ -54,128 +71,122 @@ const TraceIP = () => {
         lon: data.lon,
       };
 
-      setIsIP([IPObj]);
-
+      setIsIP(IPObj);
+      setQuery(data.query);
       console.log(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      setError(error.message);
     }
   };
 
-  useEffect(() => {
-    // getIP();
-    console.log("Data is Fetched");
-  }, []);
-
   return (
-    <div className="flex flex-col items-center justify-between p-24 max-w-7xl">
-      <div className="relative max-w-lg mt-2 min-h-fit">
+    <div className="py-16">
+      <div className="relative max-w-xl mt-5 min-h-fit mb-5 mx-auto shadow-lg shadow-primary/10">
         <Button className="absolute right-0" onClick={getIP}>
           Trace IP
         </Button>
         <Input
           placeholder="Trace your IP address....."
-          className="w-full pr-40 pl-3 py-2"
+          className="w-full pr-40 pl-3 py-2 bg-white text-primary"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
 
-      {isIP.map((ip, idx) => (
-        <div key={idx} className="flex flex-col justify-between p-4">
-          <div style={{ height: "40rem", width: "60rem" }}>
+      {isIP && (
+        <div>
+          <div className="map-container">
             <MapContainer
-              center={[ip.lat, ip.lon]}
+              key={`${isIP.lat}-${isIP.lon}`}
+              center={[isIP.lat, isIP.lon]}
               zoom={13}
               scrollWheelZoom={false}
-              style={{ height: "100%", width: "100%" }}
               className="rounded-3xl border"
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Marker position={[ip.lat, ip.lon]} icon={icon}>
-                <Popup>{ip.city}</Popup>
+              <Marker position={[isIP.lat, isIP.lon]} icon={icon}>
+                <Popup>
+                  {isIP.city}, {isIP.country}
+                </Popup>
               </Marker>
             </MapContainer>
           </div>
-          <div className="p-10">
+
+          <div className="container mx-auto bg-white p-4 rounded-md mt-10 grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 shadow-lg shadow-primary/10">
             <div className="p-2">
-              <h1 className="font-bold text-xl">
-                as: <span className="font-normal text-md">{ip.as}</span>
-              </h1>
-              <Separator />
-            </div>
-            <div className="p-2">
-              <h1 className="font-bold text-xl">
-                city: <span className="font-normal text-md">{ip.city}</span>
-              </h1>
-              <Separator />
+              <h1 className="font-normal text-md">Continent</h1>
+              <span className="font-bold text-2xl text-primary">
+                {isIP.continent}
+              </span>
             </div>
 
             <div className="p-2">
-              <h1 className="font-bold text-xl">
-                continent:{" "}
-                <span className="font-normal text-md">{ip.continent}</span>
-              </h1>
-              <Separator />
-            </div>
-            <div className="p-2">
-              <h1 className="font-bold text-xl">
-                country:{" "}
-                <span className="font-normal text-md">{ip.country}</span>
-              </h1>
-              <Separator />
+              <h1 className="font-normal text-md">Country</h1>
+              <span className="font-bold text-2xl text-primary">
+                {isIP.country}
+              </span>
             </div>
 
             <div className="p-2">
-              <h1 className="font-bold text-xl">
-                countryCode:{" "}
-                <span className="font-normal text-md">{ip.countryCode}</span>
-              </h1>
-              <Separator />
+              <h1 className="font-normal text-md">Region Name</h1>
+              <span className="font-bold text-2xl text-primary">
+                {isIP.regionName}
+              </span>
             </div>
 
             <div className="p-2">
-              <h1 className="font-bold text-xl">
-                currency:{" "}
-                <span className="font-normal text-md">{ip.currency}</span>
-              </h1>
-              <Separator />
-            </div>
-
-            <div className="p-2">
-              <h1 className="font-bold text-xl">
-                isp: <span className="font-normal text-md">{ip.isp}</span>
-              </h1>
-              <Separator />
-            </div>
-
-            <div className="p-2">
-              <h1 className="font-bold text-xl">
-                org: <span className="font-normal text-md">{ip.org}</span>
-              </h1>
-              <Separator />
-            </div>
-
-            <div className="p-2">
-              <h1 className="font-bold text-xl">
-                regionName:{" "}
-                <span className="font-normal text-md">{ip.regionName}</span>
-              </h1>
-              <Separator />
-            </div>
-            <div className="p-2">
-              <h1 className="font-bold text-xl">
-                timezone:{" "}
-                <span className="font-normal text-md">{ip.timezone}</span>
-              </h1>
-              <Separator />
+              <h1 className="font-normal text-md">City</h1>
+              <span className="font-bold text-2xl text-primary">
+                {isIP.city}
+              </span>
             </div>
           </div>
+
+          <div className="p-10 container bg-white rounded-md mt-10 shadow-lg shadow-primary/10">
+            <div className="grid md:grid-cols-2 grid-cols-1 p-2">
+              <h1 className="text-xl text-primary">AS</h1>
+              <span className="text-xl flex justify-end">{isIP.as}</span>
+            </div>
+            <Separator />
+
+            <div className="grid md:grid-cols-2 grid-cols-1 p-2">
+              <h1 className="text-xl text-primary">Country Code</h1>
+              <span className="text-xl flex justify-end">
+                {isIP.countryCode}
+              </span>
+            </div>
+            <Separator />
+
+            <div className="grid md:grid-cols-2 grid-cols-1 p-2">
+              <h1 className="text-xl text-primary">Currency</h1>
+              <span className="text-xl flex justify-end">{isIP.currency}</span>
+            </div>
+            <Separator />
+
+            <div className="grid md:grid-cols-2 grid-cols-1 p-2">
+              <h1 className="text-xl text-primary">ISP</h1>
+              <span className="text-xl flex justify-end">{isIP.isp}</span>
+            </div>
+            <Separator />
+
+            <div className="grid md:grid-cols-2 grid-cols-1 p-2">
+              <h1 className="text-xl text-primary">Organization</h1>
+              <span className="text-xl flex justify-end">{isIP.org}</span>
+            </div>
+            <Separator />
+
+            <div className="grid md:grid-cols-2 grid-cols-1 p-2">
+              <h1 className="text-xl text-primary">TimeZone</h1>
+              <span className="text-xl flex justify-end">{isIP.timezone}</span>
+            </div>
+            <Separator />
+          </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };
